@@ -8,8 +8,8 @@
         http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd"
        default-autowire="constructor">
 
-
   <bean class="cdkapi.CdkApi"/>
+
   <bean id="objectMapper" class="cdkapi.util.JsonObjectMapperFactory" factory-method="create"/>
   <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
     <mvc:message-converters>
