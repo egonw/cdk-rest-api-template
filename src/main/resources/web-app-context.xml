@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd"
+       default-autowire="constructor">
+
+
+  <bean class="cdkapi.CdkApi"/>
+  <bean id="objectMapper" class="cdkapi.util.JsonObjectMapperFactory" factory-method="create"/>
+  <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
+    <mvc:message-converters>
+      <!--  Required by springdoc/swagger -->
+      <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+      <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+      <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="objectMapper" ref="objectMapper"/>
+      </bean>
+    </mvc:message-converters>
+  </mvc:annotation-driven>
+
+  <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+    <property name="useRegisteredExtensionsOnly" value="true"/>
+    <property name="favorParameter" value="true"/>
+    <property name="parameterName" value="format"/>
+    <property name="defaultContentType" value="application/json"/>
+    <property name="mediaTypes">
+      <map>
+        <entry key="css" value="text/css"/>
+        <entry key="js" value="application/javascript"/>
+        <entry key="json" value="application/json"/>
+        <entry key="mzml" value="application/mzml"/>
+        <entry key="excel" value="application/vnd.ms-excel"/>
+      </map>
+    </property>
+  </bean>
+  <bean name="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" />
+</beans>

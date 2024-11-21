@@ -1,0 +1,52 @@
+<configuration>
+  <contextListener class="cdkapi.util.JulOverSlf4jInstaller"/>
+  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+    <!-- reset all previous level configurations of all j.u.l. loggers, and then propagate levels from this logback.xml -->
+    <resetJUL>true</resetJUL>
+  </contextListener>
+
+  <property name="LOG_PATTERN" value="${LOG_PATTERN:-%d{yyyy-MM-dd HH:mm:ss} [%X{user}] [%11.11thread] %-5level %36.36logger{36} - %msg%n}" />
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+  </appender>
+
+  <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${user.log_dir:-${user.home}}${file.separator}cdkapi${file.separator}cdkapi.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${user.log_dir:-${user.home}}${file.separator}cdkapi${file.separator}cdkapi.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>3GB</totalSizeCap>
+    </rollingPolicy>
+    <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+  </appender>
+
+  <logger name="org.springframework.security.web.access" level="INFO"/>
+  <!-- Spring WARNs us that it's not secure to store open passwords (for in-memory users) in the config,
+       but at the moment we don't want to care about this. Later we should add an ability to use encrypted ones.-->
+  <logger name="org.springframework.security.core.userdetails.User" level="ERROR"/>
+
+  <!--In case no RequestMapper was resolved for a request (e.g. SpringMVC method is incorrectly mapped
+or some wrong params/headers are sent from the client), the reason isn't logged unless this one is enabled-->
+  <logger name="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver" level="DEBUG" />
+  <!--Shows which filters, listeners and servlets get registered in Servlet Container. Useful to see them to
+  understand the app better.-->
+  <logger name="org.springframework.boot.web.servlet" level="INFO"/>
+  <!--Outputs info about which config file is used and which profiles are activated. Important stuff.-->
+  <logger name="org.springframework.boot.context.config" level="DEBUG"/>
+  <!--If an error occurs while resolving URL arguments, it can be helpful to know where this happened.-->
+  <logger name="org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod" level="DEBUG"/>
+
+  <root level="INFO">
+    <!-- Logging to file will retain the logs between restarts -->
+    <appender-ref ref="fileAppender"/>
+    <!-- If Docker isn't configured to truncate old log entries, it will grow indefinitely. But logging to stdout
+         may be important to the clients who use AWS ECS which doesn't let you access the file system.
+         Check Docker Compose options:
+             logging:
+                options:
+                    max-size: "10m"
+                    max-file: "3"
+          -->
+    <appender-ref ref="console"/>
+  </root>
+</configuration>
