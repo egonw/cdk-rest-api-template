@@ -35,7 +35,7 @@ public class CdkApiTest {
 
     @Test
     public void neutralizedAminePlus() {
-        assertEquals("CCN", apiClient.getStructInfo("CC[N+H3]").smiles);
+        assertEquals("CCN", apiClient.getStructInfo("CC[NH3+]").smiles);
     }
 
     @Test
@@ -43,5 +43,14 @@ public class CdkApiTest {
         assertEquals("CCN", apiClient.getStructInfo("CCN").smiles);
     }
 
+    @Test
+    public void testCarboxylicAcids() {
+        assertEquals("OC(=O)C(=O)O", apiClient.getStructInfo("[O-]C(=O)C(=O)[O-]").smiles);
+    }
+
+    @Test
+    public void testAminoAcid() {
+        assertEquals("NC(C)C(=O)O", apiClient.getStructInfo("[NH3+]C(C)C(=O)[O-]").smiles);
+    }
 
 }

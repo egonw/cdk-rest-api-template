@@ -29,7 +29,7 @@ class CdkApi {
     private static final SmilesGenerator generator = SmilesGenerator.isomeric();
 
     private static final Transform neutralAcid = Smirks.compile("[O-:1]>>[H][O+0:1]");
-    private static final Transform neutralAmine = Smirks.compile("[N+H3:1]>>[N+0H2:1]")
+    private static final Transform neutralAmine = Smirks.compile("[N+H3:1]>>[N+0H2:1]");
 
     @GetMapping("/smirks/neutralize/{struct}")
     Map<String, Object> neutralize(@PathVariable(name = "struct") String struct) throws InvalidSmilesException {
@@ -38,11 +38,15 @@ class CdkApi {
 
         Iterable<IAtomContainer> iterable = neutralAcid.apply(cdkStruct, Transform.Mode.Exclusive);
         for (IAtomContainer neutral : iterable) {
-            String neutralSmiles = generator.createSMILES(neutral);
-            LOG.info("  --> {}", neutralSmiles);
-            return Map.of("smiles", neutralSmiles);
+            cdkStruct = neutral;
+            struct = generator.createSMILES(neutral);
+            LOG.info("  --> {}", struct);
         }
-
+        iterable = neutralAmine.apply(cdkStruct, Transform.Mode.Exclusive);
+        for (IAtomContainer neutral : iterable) {
+            struct = generator.createSMILES(neutral);
+            LOG.info("  --> {}", struct);
+        }
         return Map.of("smiles", struct);
     }
 }
