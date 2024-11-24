@@ -19,8 +19,29 @@ public class CdkApiTest {
     ApiClient apiClient;
 
     @Test
-    public void returnsMwFromSmiles() {
-        assertEquals(44.09573372097032, apiClient.getStructInfo("CCC").mw, 0);
+    public void returnSmiles() {
+        assertEquals("CCC", apiClient.getStructInfo("CCC").smiles);
     }
+
+    @Test
+    public void neutralizedCarboxylate() {
+        assertEquals("CC(=O)O", apiClient.getStructInfo("CC(=O)[O-]").smiles);
+    }
+
+    @Test
+    public void noChangeCarboxylicAcid() {
+        assertEquals("CC(=O)O", apiClient.getStructInfo("CC(=O)O").smiles);
+    }
+
+    @Test
+    public void neutralizedAminePlus() {
+        assertEquals("CCN", apiClient.getStructInfo("CC[N+H3]").smiles);
+    }
+
+    @Test
+    public void noChangeAmine() {
+        assertEquals("CCN", apiClient.getStructInfo("CCN").smiles);
+    }
+
 
 }

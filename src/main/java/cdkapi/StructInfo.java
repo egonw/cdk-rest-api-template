@@ -1,11 +1,11 @@
 package cdkapi;
 
 public class StructInfo {
-    public double mw;
+    public String smiles;
 
     public StructInfo() {}
 
-    public StructInfo(double mw) {
-        this.mw = mw;
+    public StructInfo(String smiles) {
+        this.smiles = smiles;
     }
 }

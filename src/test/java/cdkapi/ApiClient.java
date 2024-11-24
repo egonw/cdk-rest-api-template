@@ -14,6 +14,6 @@ public class ApiClient {
     }
 
     public StructInfo getStructInfo(String smiles) {
-        return given().get("/api/mw/" + smiles).thenReturn().as(StructInfo.class);
+        return given().get("/api/smirks/neutralize/" + smiles).thenReturn().as(StructInfo.class);
     }
 }
