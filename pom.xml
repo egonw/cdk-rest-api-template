@@ -143,9 +143,32 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>cdkapi.Starter</mainClass>
-                            </transformer>
-                        </transformers>
-                    </configuration>
+                                </transformer>
+                                <!-- Different Spring libs may have different spring.handlers & spring.schemas.
+                                     After shading they'll be overwritten with the latest version that the shade-plugin
+                                     encounters. Here we concatenate all of instead of overwriting. -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.handlers</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.schemas</resource>
+                                </transformer>
+                            </transformers>
+
+                            <filters>
+                                <!--Because we're repacking with shade plug-in (which is questionable) the signatures inside the
+                                archives are put into our main JAR which makes it seem our JAR is signed (and signed incorrectly).
+                                So let's remove those signatures.-->
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
