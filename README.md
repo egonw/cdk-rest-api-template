@@ -5,7 +5,7 @@ An example of project that uses Chemistry Development Kit (CDK) and provides a R
 
 To start it in IDE, run [Starter](./src/main/java/cdkapi/Starter.java) and open your browser at http://localhost:8080/api/mw/CCC
 
-To compile and start from the command line, run `mvn clean install` followed by `java -jar target/cdk-rest-template-1.0-SNAPSHOT-shaded.jar`.
+To compile and start from the command line, run `mvn clean package` followed by `java -jar target/cdk-rest-template-1.0-SNAPSHOT-shaded.jar`.
 
 Project structure:
 
